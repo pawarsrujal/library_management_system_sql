@@ -92,27 +92,27 @@ ALTER TABLE books ALTER COLUMN category TYPE VARCHAR(20);
 
 ```
 Task 1: Create a New Book Record
-```
+```sql
 INSERT INTO books(isbn, book_title, category, rental_price, status, author, publisher)
 VALUES('978-1-60129-456-2', 'To Kill a Mockingbird', 'Classic', 6.00, 'yes', 'Harper Lee', 'J.B. Lippincott & Co.');
 SELECT * FROM books;
 
 ```
 Task 2: Update an Existing Member's Address
-```
+```sql
 UPDATE members SET member_address = '125 Oak St' WHERE member_id = 'C103';
 
 ```
 Task 3: Delete a Record from Issued Status
-```
+```sql
 DELETE FROM issued_status WHERE issued_id = 'IS121';
 ```
 Task 4: Retrieve All Books Issued by a Specific Employee
-```
+```sql
 SELECT * FROM issued_status WHERE issued_emp_id = 'E101';
 ```
 Task 5: List Members Who Have Issued More Than One Book
-```
+```sql
 SELECT issued_member_id, COUNT(*) 
 FROM issued_status 
 GROUP BY issued_member_id 
@@ -120,7 +120,7 @@ HAVING COUNT(*) > 1;
 
 ```
 Task 6: Create Book Issue Summary Table
-```
+```sql
 CREATE TABLE book_issued_cnt AS
 SELECT b.isbn, b.book_title, COUNT(ist.issued_id) AS issue_count
 FROM issued_status AS ist
@@ -129,12 +129,12 @@ GROUP BY b.isbn, b.book_title;
 
 ```
 Task 7: Retrieve All Books in a Specific Category
-```
+```sql
 SELECT * FROM books WHERE category = 'Classic';
 
 ```
 Task 8: Find Total Rental Income by Category
-```
+```sql
 SELECT b.category, SUM(b.rental_price), COUNT(*)
 FROM issued_status AS ist
 JOIN books AS b ON b.isbn = ist.issued_book_isbn
@@ -142,12 +142,12 @@ GROUP BY b.category;
 
 ```
 Task 9: List Members Registered in the Last 180 Days
-```
+```sql
 SELECT * FROM members WHERE reg_date >= CURRENT_DATE - INTERVAL '180 days';
 
 ```
 Task 10: Employees with Branch Managers and Branch Details
-```
+```sql
 SELECT e1.emp_id, e1.emp_name, e1.position, e1.salary, b.*, e2.emp_name AS manager
 FROM employees AS e1
 JOIN branch AS b ON e1.branch_id = b.branch_id
@@ -155,13 +155,13 @@ JOIN employees AS e2 ON e2.emp_id = b.manager_id;
 
 ```
 Task 11: Create a Table of Expensive Books
-```
+```sql
 CREATE TABLE expensive_books AS
 SELECT * FROM books WHERE rental_price > 7.00;
 
 ```
 Task 12: Retrieve Books Not Yet Returned
-```
+```sql
 SELECT * 
 FROM issued_status AS ist
 LEFT JOIN return_status AS rs ON rs.issued_id = ist.issued_id
@@ -170,7 +170,7 @@ WHERE rs.return_id IS NULL;
 ```
 Advanced SQL Operations
 Task 13: Identify Overdue Books
-```
+```sql
 SELECT ist.issued_member_id, m.member_name, bk.book_title, ist.issued_date,
        CURRENT_DATE - ist.issued_date AS over_dues_days
 FROM issued_status AS ist
@@ -182,7 +182,7 @@ ORDER BY 1;
 
 ```
 Task 14: Stored Procedure – Return Book and Update Status
-```
+```sql
 CREATE OR REPLACE PROCEDURE add_return_records(
   p_return_id VARCHAR(10),
   p_issued_id VARCHAR(10),
@@ -206,7 +206,7 @@ END;
 $$;
 ```
 Task 15: Branch Performance Report
-```
+```sql
 CREATE TABLE branch_reports AS
 SELECT b.branch_id, b.manager_id,
        COUNT(ist.issued_id) AS number_book_issued,
@@ -221,7 +221,7 @@ GROUP BY b.branch_id, b.manager_id;
 
 ```
 Task 16: CTAS – Active Members
-```
+```sql
 CREATE TABLE active_members AS
 SELECT * FROM members
 WHERE member_id IN (
@@ -232,7 +232,7 @@ WHERE member_id IN (
 
 ```
 Task 17: Top 3 Employees by Book Issues
-```
+```sql
 SELECT e.emp_name, b.*, COUNT(ist.issued_id) AS no_book_issued
 FROM issued_status AS ist
 JOIN employees AS e ON e.emp_id = ist.issued_emp_id
@@ -243,7 +243,7 @@ LIMIT 3;
 
 ```
 Task 18: Stored Procedure – Issue Book with Availability Check
-```
+```sql
 CREATE OR REPLACE PROCEDURE issue_book(
   p_issued_id VARCHAR(10),
   p_issued_member_id VARCHAR(30),
